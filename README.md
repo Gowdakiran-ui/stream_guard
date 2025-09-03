@@ -32,7 +32,7 @@ flowchart LR
   A[Kafka Producer] --> B[Kafka Broker]
   B --> C[Kafka Consumer]
   C --> D[PostgreSQL DB]
-  D --> E[ML Pipeline (EDA + Feature Engg + Training)]
+  D --> E[ML Pipeline EDA + Feature Engg + Training]
   E --> F[Model Registry / MLflow]
   F --> G[Dockerized Model Service]
   G --> H[Kubernetes Cluster]

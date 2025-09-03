@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamGuard - Fraud Detection System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-container {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 20px 20px 0 0 !important;
+            padding: 1.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+        }
+
+        .btn {
+            border-radius: 12px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-outline-secondary:hover {
+            transform: translateY(-2px);
+        }
+
+        .result-card {
+            margin-top: 2rem;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .risk-badge {
+            font-size: 1.1rem;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+
+        .risk-low {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .risk-medium {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .risk-high {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .icon-large {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="fas fa-shield-alt text-primary me-2"></i>
+                StreamGuard
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="#home">Home</a>
+                <a class="nav-link" href="/demo">Demo</a>
+                <a class="nav-link" href="#about">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container main-container" style="margin-top: 100px;">
+        <!-- Hero Section -->
+        <div class="row mb-5">
+            <div class="col-12 text-center text-white">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="fas fa-shield-alt me-3"></i>
+                    Fraud Detection System
+                </h1>
+                <p class="lead">Advanced machine learning powered transaction fraud detection</p>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <i class="fas fa-brain icon-large text-primary"></i>
+                    <h4>AI Powered</h4>
+                    <p>Advanced machine learning algorithms for accurate fraud detection</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <i class="fas fa-clock icon-large text-success"></i>
+                    <h4>Real-time</h4>
+                    <p>Instant fraud risk assessment for every transaction</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <i class="fas fa-chart-line icon-large text-warning"></i>
+                    <h4>High Accuracy</h4>
+                    <p>Trained on large datasets for maximum precision</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-credit-card me-2"></i>
+                            Transaction Analysis
+                        </h3>
+                        <p class="mb-0 mt-2 opacity-75">Enter transaction details to check for fraud risk</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="fraudForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="amount" class="form-label fw-semibold">
+                                        <i class="fas fa-dollar-sign text-success me-1"></i>
+                                        Transaction Amount
+                                    </label>
+                                    <input type="number" class="form-control" id="amount" step="0.01" value="100.00" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="product_cd" class="form-label fw-semibold">
+                                        <i class="fas fa-tag text-info me-1"></i>
+                                        Product Code
+                                    </label>
+                                    <select class="form-select" id="product_cd">
+                                        <option value="W" selected>W - Web</option>
+                                        <option value="H">H - Hardware</option>
+                                        <option value="C">C - Card</option>
+                                        <option value="R">R - Retail</option>
+                                        <option value="S">S - Service</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="card4" class="form-label fw-semibold">
+                                        <i class="fas fa-credit-card text-primary me-1"></i>
+                                        Card Type
+                                    </label>
+                                    <select class="form-select" id="card4">
+                                        <option value="visa" selected>Visa</option>
+                                        <option value="mastercard">Mastercard</option>
+                                        <option value="american express">American Express</option>
+                                        <option value="discover">Discover</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="card6" class="form-label fw-semibold">
+                                        <i class="fas fa-wallet text-warning me-1"></i>
+                                        Card Category
+                                    </label>
+                                    <select class="form-select" id="card6">
+                                        <option value="credit" selected>Credit</option>
+                                        <option value="debit">Debit</option>
+                                        <option value="charge card">Charge Card</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="p_emaildomain" class="form-label fw-semibold">
+                                        <i class="fas fa-envelope text-secondary me-1"></i>
+                                        Email Domain
+                                    </label>
+                                    <select class="form-select" id="p_emaildomain">
+                                        <option value="gmail.com" selected>gmail.com</option>
+                                        <option value="yahoo.com">yahoo.com</option>
+                                        <option value="outlook.com">outlook.com</option>
+                                        <option value="hotmail.com">hotmail.com</option>
+                                        <option value="anonymous.com">anonymous.com</option>
+                                        <option value="mail.com">mail.com</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="model" class="form-label fw-semibold">
+                                        <i class="fas fa-robot text-danger me-1"></i>
+                                        ML Model
+                                    </label>
+                                    <select class="form-select" id="model">
+                                        <option value="Random Forest" selected>Random Forest</option>
+                                        <option value="Gradient Boosting">Gradient Boosting</option>
+                                        <option value="Logistic Regression">Logistic Regression</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="c1" class="form-label fw-semibold">C1</label>
+                                    <input type="number" class="form-control" id="c1" value="1">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="c2" class="form-label fw-semibold">C2</label>
+                                    <input type="number" class="form-control" id="c2" value="1">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="c3" class="form-label fw-semibold">C3</label>
+                                    <input type="number" class="form-control" id="c3" value="0">
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg me-3">
+                                    <i class="fas fa-search me-2"></i>
+                                    Analyze Transaction
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-lg" onclick="loadSampleData()">
+                                    <i class="fas fa-flask me-2"></i>
+                                    Load Sample
+                                </button>
+                            </div>
+
+                            <div class="loading text-center mt-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Analyzing transaction...</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Results Card -->
+                <div id="results" class="result-card" style="display: none;">
+                    <div class="card">
+                        <div class="card-body p-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h4 class="mb-3">
+                                        <i class="fas fa-chart-pie me-2"></i>
+                                        Analysis Results
+                                    </h4>
+                                    <div id="result-content">
+                                        <!-- Results will be populated here -->
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <div id="risk-indicator">
+                                        <!-- Risk indicator will be populated here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('fraudForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Show loading
+            document.querySelector('.loading').classList.add('show');
+            document.getElementById('results').style.display = 'none';
+            
+            // Collect form data
+            const formData = {
+                amount: parseFloat(document.getElementById('amount').value),
+                product_cd: document.getElementById('product_cd').value,
+                card4: document.getElementById('card4').value,
+                card6: document.getElementById('card6').value,
+                p_emaildomain: document.getElementById('p_emaildomain').value,
+                model: document.getElementById('model').value,
+                c1: parseInt(document.getElementById('c1').value),
+                c2: parseInt(document.getElementById('c2').value),
+                c3: parseInt(document.getElementById('c3').value)
+            };
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                // Hide loading
+                document.querySelector('.loading').classList.remove('show');
+                
+                if (response.ok) {
+                    displayResults(result);
+                } else {
+                    displayError(result.error || 'Prediction failed');
+                }
+                
+            } catch (error) {
+                document.querySelector('.loading').classList.remove('show');
+                displayError('Network error: ' + error.message);
+            }
+        });
+        
+        function displayResults(result) {
+            const resultContent = document.getElementById('result-content');
+            const riskIndicator = document.getElementById('risk-indicator');
+            
+            // Determine risk level styling
+            const riskClass = result.risk_level.toLowerCase();
+            const riskIcon = result.is_fraud ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle';
+            const riskColor = result.is_fraud ? 'text-danger' : 'text-success';
+            
+            resultContent.innerHTML = `
+                <div class="mb-3">
+                    <strong>Fraud Status:</strong> 
+                    <span class="${riskColor} fw-bold">
+                        ${result.is_fraud ? 'FRAUDULENT' : 'LEGITIMATE'}
+                    </span>
+                </div>
+                <div class="mb-3">
+                    <strong>Fraud Probability:</strong> ${result.fraud_probability}%
+                </div>
+                <div class="mb-3">
+                    <strong>Confidence:</strong> ${result.confidence}%
+                </div>
+                <div class="mb-3">
+                    <strong>Model Used:</strong> ${result.model_used}
+                </div>
+                <div class="mb-3">
+                    <strong>Analysis Time:</strong> ${new Date(result.timestamp).toLocaleString()}
+                </div>
+            `;
+            
+            riskIndicator.innerHTML = `
+                <i class="${riskIcon} ${riskColor}" style="font-size: 4rem;"></i>
+                <div class="mt-3">
+                    <span class="risk-badge risk-${riskClass}">
+                        ${result.risk_level} RISK
+                    </span>
+                </div>
+                <div class="mt-2">
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar bg-${result.is_fraud ? 'danger' : 'success'}" 
+                             style="width: ${result.fraud_probability}%"></div>
+                    </div>
+                    <small class="text-muted">${result.fraud_probability}% Fraud Probability</small>
+                </div>
+            `;
+            
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function displayError(error) {
+            const resultContent = document.getElementById('result-content');
+            const riskIndicator = document.getElementById('risk-indicator');
+            
+            resultContent.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Error:</strong> ${error}
+                </div>
+            `;
+            
+            riskIndicator.innerHTML = `
+                <i class="fas fa-times-circle text-danger" style="font-size: 4rem;"></i>
+                <div class="mt-3">
+                    <span class="badge bg-danger">ERROR</span>
+                </div>
+            `;
+            
+            document.getElementById('results').style.display = 'block';
+        }
+        
+        function loadSampleData() {
+            // Load a sample high-risk transaction
+            document.getElementById('amount').value = '2500.00';
+            document.getElementById('product_cd').value = 'R';
+            document.getElementById('card4').value = 'american express';
+            document.getElementById('card6').value = 'credit';
+            document.getElementById('p_emaildomain').value = 'anonymous.com';
+            document.getElementById('c1').value = '5';
+            document.getElementById('c2').value = '8';
+            document.getElementById('c3').value = '3';
+        }
+    </script>
+</body>
+</html>

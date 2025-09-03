@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamGuard - Demo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .sample-card {
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+        }
+
+        .risk-low { border-left: 5px solid var(--success-color); }
+        .risk-medium { border-left: 5px solid var(--warning-color); }
+        .risk-high { border-left: 5px solid var(--danger-color); }
+
+        .btn {
+            border-radius: 12px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+        }
+
+        .result-modal .modal-content {
+            border-radius: 20px;
+            border: none;
+        }
+
+        .loading {
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-shield-alt text-primary me-2"></i>
+                StreamGuard
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link active" href="/demo">Demo</a>
+                <a class="nav-link" href="#about">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 100px; margin-bottom: 50px;">
+        <!-- Header -->
+        <div class="row mb-5">
+            <div class="col-12 text-center text-white">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="fas fa-flask me-3"></i>
+                    Demo Transactions
+                </h1>
+                <p class="lead">Test the fraud detection system with sample transactions</p>
+            </div>
+        </div>
+
+        <!-- Sample Transactions -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card sample-card risk-low" onclick="testTransaction('low')">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-check-circle text-success me-3" style="font-size: 2rem;"></i>
+                            <div>
+                                <h5 class="mb-0">Low Risk Transaction</h5>
+                                <small class="text-muted">Expected: Legitimate</small>
+                            </div>
+                        </div>
+                        <div class="transaction-details">
+                            <p class="mb-2"><strong>Amount:</strong> $25.50</p>
+                            <p class="mb-2"><strong>Card:</strong> Visa Credit</p>
+                            <p class="mb-2"><strong>Email:</strong> gmail.com</p>
+                            <p class="mb-0"><strong>Product:</strong> Web (W)</p>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-success btn-sm w-100">
+                                <i class="fas fa-play me-2"></i>Test Transaction
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card sample-card risk-medium" onclick="testTransaction('medium')">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-exclamation-triangle text-warning me-3" style="font-size: 2rem;"></i>
+                            <div>
+                                <h5 class="mb-0">Medium Risk Transaction</h5>
+                                <small class="text-muted">Expected: Moderate Risk</small>
+                            </div>
+                        </div>
+                        <div class="transaction-details">
+                            <p class="mb-2"><strong>Amount:</strong> $500.00</p>
+                            <p class="mb-2"><strong>Card:</strong> Mastercard Debit</p>
+                            <p class="mb-2"><strong>Email:</strong> yahoo.com</p>
+                            <p class="mb-0"><strong>Product:</strong> Card (C)</p>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-warning btn-sm w-100">
+                                <i class="fas fa-play me-2"></i>Test Transaction
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card sample-card risk-high" onclick="testTransaction('high')">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-exclamation-circle text-danger me-3" style="font-size: 2rem;"></i>
+                            <div>
+                                <h5 class="mb-0">High Risk Transaction</h5>
+                                <small class="text-muted">Expected: Fraudulent</small>
+                            </div>
+                        </div>
+                        <div class="transaction-details">
+                            <p class="mb-2"><strong>Amount:</strong> $2,500.00</p>
+                            <p class="mb-2"><strong>Card:</strong> Amex Credit</p>
+                            <p class="mb-2"><strong>Email:</strong> anonymous.com</p>
+                            <p class="mb-0"><strong>Product:</strong> Retail (R)</p>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-danger btn-sm w-100">
+                                <i class="fas fa-play me-2"></i>Test Transaction
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Comparison Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <h4 class="mb-4">
+                            <i class="fas fa-robot me-2"></i>
+                            Model Comparison
+                        </h4>
+                        <p class="text-muted mb-4">Test the same transaction with different ML models to compare results</p>
+                        
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <button class="btn btn-outline-primary w-100" onclick="testAllModels('Random Forest')">
+                                    <i class="fas fa-tree me-2"></i>Random Forest
+                                </button>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <button class="btn btn-outline-primary w-100" onclick="testAllModels('Gradient Boosting')">
+                                    <i class="fas fa-chart-line me-2"></i>Gradient Boosting
+                                </button>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <button class="btn btn-outline-primary w-100" onclick="testAllModels('Logistic Regression')">
+                                    <i class="fas fa-calculator me-2"></i>Logistic Regression
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading text-center mt-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-white">Analyzing transaction...</p>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="modal fade result-modal" id="resultModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-chart-pie me-2"></i>
+                        Analysis Results
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Results will be populated here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const sampleTransactions = {
+            low: {
+                amount: 25.50,
+                product_cd: 'W',
+                card4: 'visa',
+                card6: 'credit',
+                p_emaildomain: 'gmail.com',
+                c1: 1, c2: 1, c3: 0, c4: 0
+            },
+            medium: {
+                amount: 500.00,
+                product_cd: 'C',
+                card4: 'mastercard',
+                card6: 'debit',
+                p_emaildomain: 'yahoo.com',
+                c1: 2, c2: 3, c3: 1, c4: 1
+            },
+            high: {
+                amount: 2500.00,
+                product_cd: 'R',
+                card4: 'american express',
+                card6: 'credit',
+                p_emaildomain: 'anonymous.com',
+                c1: 5, c2: 8, c3: 3, c4: 2
+            }
+        };
+
+        async function testTransaction(riskLevel, model = 'Random Forest') {
+            const transaction = sampleTransactions[riskLevel];
+            transaction.model = model;
+
+            // Show loading
+            document.querySelector('.loading').classList.add('show');
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(transaction)
+                });
+
+                const result = await response.json();
+
+                // Hide loading
+                document.querySelector('.loading').classList.remove('show');
+
+                if (response.ok) {
+                    showResults(result, riskLevel);
+                } else {
+                    showError(result.error || 'Prediction failed');
+                }
+
+            } catch (error) {
+                document.querySelector('.loading').classList.remove('show');
+                showError('Network error: ' + error.message);
+            }
+        }
+
+        async function testAllModels(selectedModel) {
+            // Test high-risk transaction with selected model
+            await testTransaction('high', selectedModel);
+        }
+
+        function showResults(result, expectedRisk) {
+            const modalBody = document.getElementById('modalBody');
+            
+            const riskIcon = result.is_fraud ? 'fas fa-exclamation-triangle text-danger' : 'fas fa-check-circle text-success';
+            const riskColor = result.is_fraud ? 'text-danger' : 'text-success';
+            const riskClass = result.risk_level.toLowerCase();
+
+            modalBody.innerHTML = `
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5>Transaction Analysis</h5>
+                        <div class="mb-3">
+                            <strong>Expected Risk Level:</strong> 
+                            <span class="badge bg-secondary">${expectedRisk.toUpperCase()}</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Fraud Status:</strong> 
+                            <span class="${riskColor} fw-bold">
+                                ${result.is_fraud ? 'FRAUDULENT' : 'LEGITIMATE'}
+                            </span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Fraud Probability:</strong> ${result.fraud_probability}%
+                        </div>
+                        <div class="mb-3">
+                            <strong>Confidence:</strong> ${result.confidence}%
+                        </div>
+                        <div class="mb-3">
+                            <strong>Risk Level:</strong> 
+                            <span class="badge bg-${riskClass === 'low' ? 'success' : riskClass === 'medium' ? 'warning' : 'danger'}">
+                                ${result.risk_level}
+                            </span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Model Used:</strong> ${result.model_used}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Analysis Time:</strong> ${new Date(result.timestamp).toLocaleString()}
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <i class="${riskIcon}" style="font-size: 4rem;"></i>
+                        <div class="mt-3">
+                            <div class="progress" style="height: 15px;">
+                                <div class="progress-bar bg-${result.is_fraud ? 'danger' : 'success'}" 
+                                     style="width: ${result.fraud_probability}%"></div>
+                            </div>
+                            <small class="text-muted mt-2 d-block">${result.fraud_probability}% Fraud Probability</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('resultModal'));
+            modal.show();
+        }
+
+        function showError(error) {
+            const modalBody = document.getElementById('modalBody');
+            
+            modalBody.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Error:</strong> ${error}
+                </div>
+            `;
+
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('resultModal'));
+            modal.show();
+        }
+    </script>
+</body>
+</html>

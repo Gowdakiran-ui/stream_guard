@@ -1,15 +1,14 @@
----
+# 🚨 StreamGuard – Real-Time Fraud Detection with MLOps  
 
-# 🚨 StreamGuard – Real-Time Fraud Detection with MLOps
+## 📌 Overview  
 
-## 📌 Overview
+**StreamGuard** is an end-to-end **real-time fraud detection system** built using modern **MLOps practices**.  
+It ingests streaming data through **Kafka**, processes and stores it in **PostgreSQL**, applies **EDA & Feature Engineering**, trains an **ML model**, and deploys the model inside a **containerized, CI/CD pipeline** using **Jenkins, Docker, and Kubernetes**.  
 
-**StreamGuard** is an end-to-end **real-time fraud detection system** built using modern **MLOps practices**.
-It ingests streaming data through **Kafka**, processes and stores it in **PostgreSQL**, applies **EDA & Feature Engineering**, trains an **ML model**, and deploys the model inside a **containerized, CI/CD pipeline** using **Jenkins, Docker, and Kubernetes**.
-
-The project simulates **real-world financial fraud detection** pipelines used in banks and fintech.
+The project simulates **real-world financial fraud detection** pipelines used in banks and fintech.  
 
 ---
+
 
 ## ⚡ Features
 

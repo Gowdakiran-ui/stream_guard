@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: streamguard-training-job
+  namespace: default
+  labels:
+    app: streamguard-ml
+    component: training
+spec:
+  template:
+    metadata:
+      labels:
+        app: streamguard-ml
+        component: training
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: streamguard-trainer
+        image: streamguard-ml:latest
+        imagePullPolicy: IfNotPresent
+        command: ["python", "fraud_detection_ml_workflow.py"]
+        env:
+        - name: PYTHONUNBUFFERED
+          value: "1"
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+        volumeMounts:
+        - name: model-storage
+          mountPath: /app/models
+        - name: data-storage
+          mountPath: /app/data
+        - name: training-data
+          mountPath: /app/train_transaction.csv
+          subPath: train_transaction.csv
+          readOnly: true
+      volumes:
+      - name: model-storage
+        persistentVolumeClaim:
+          claimName: streamguard-models-pvc
+      - name: data-storage
+        persistentVolumeClaim:
+          claimName: streamguard-data-pvc
+      - name: training-data
+        persistentVolumeClaim:
+          claimName: streamguard-training-data-pvc
+  backoffLimit: 3

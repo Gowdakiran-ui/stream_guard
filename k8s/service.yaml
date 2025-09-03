@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamguard-ml-service
+  namespace: default
+  labels:
+    app: streamguard-ml
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 5000
+    protocol: TCP
+    name: http
+  selector:
+    app: streamguard-ml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamguard-ml-nodeport
+  namespace: default
+  labels:
+    app: streamguard-ml
+    service-type: nodeport
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 5000
+    nodePort: 30080
+    protocol: TCP
+    name: http
+  selector:
+    app: streamguard-ml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: streamguard-ml-loadbalancer
+  namespace: default
+  labels:
+    app: streamguard-ml
+    service-type: loadbalancer
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 5000
+    protocol: TCP
+    name: http
+  selector:
+    app: streamguard-ml
+  # Optional: Specify loadBalancerIP if you have a static IP
+  # loadBalancerIP: "YOUR_STATIC_IP"

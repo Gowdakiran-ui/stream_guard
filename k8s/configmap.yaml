@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: streamguard-config
+  namespace: default
+  labels:
+    app: streamguard-ml
+data:
+  FLASK_ENV: "production"
+  PYTHONUNBUFFERED: "1"
+  FLASK_APP: "app.py"
+  # Add other configuration as needed
+---
+# Note: For the training data ConfigMap, you would need to create it from the CSV file
+# kubectl create configmap streamguard-training-data --from-file=train_transaction.csv
+# 
+# Or if the file is too large for ConfigMap (>1MB), use a PersistentVolume instead:
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: streamguard-training-data-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard

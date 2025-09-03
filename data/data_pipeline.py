@@ -71,3 +71,4 @@ finally:
     consumer.close()
     cursor.close()
     conn.close()
+

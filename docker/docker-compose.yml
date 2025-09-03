@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  streamguard-ml:
+    build: .
+    container_name: streamguard-fraud-detection
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./logs:/app/logs
+      - ./train_transaction.csv:/app/train_transaction.csv:ro
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Add a training service that runs the ML workflow
+  streamguard-trainer:
+    build: .
+    container_name: streamguard-trainer
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./train_transaction.csv:/app/train_transaction.csv:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: ["python", "fraud_detection_ml_workflow.py"]
+    profiles:
+      - training
+    restart: "no"
+
+networks:
+  default:
+    name: streamguard-network
